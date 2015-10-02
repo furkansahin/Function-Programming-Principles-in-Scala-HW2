@@ -29,10 +29,10 @@ class FunSetSuite extends FunSuite {
   /**
    * Tests are written using the "test" operator and the "assert" method.
    */
-  // test("string take") {
-  //   val message = "hello, world"
-  //   assert(message.take(5) == "hello")
-  // }
+   test("string take") {
+     val message = "hello, world"
+     assert(message.take(5) == "hello")
+   }
 
   /**
    * For ScalaTest tests, there exists a special equality operator "===" that
@@ -43,9 +43,9 @@ class FunSetSuite extends FunSuite {
    * Try it out! Change the values so that the assertion fails, and look at the
    * error message.
    */
-  // test("adding ints") {
-  //   assert(1 + 2 === 3)
-  // }
+   test("adding ints") {
+     assert(1 + 2 === 3)
+   }
 
 
   import FunSets._
@@ -107,6 +107,63 @@ class FunSetSuite extends FunSuite {
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
+    }
+  }
+  
+  test("intersect") {
+    new TestSets {
+      val u = union(union(s1, s2), s3)
+      val s = intersect(union(s1,s2), u)
+      assert(contains(s, 1), "Intersect contains 1")
+      assert(contains(s, 2), "Intersect contains 2")
+      assert(!contains(s, 3), "Intersect does not contain 3")
+    }
+  }
+
+  test("diff") {
+    new TestSets {
+      val s = diff(union(s1, s2), s3)
+      assert(contains(s, 1), "diff contains 1")
+      assert(contains(s, 2), "diff contains 2")
+      assert(!contains(s,3), "diff does not contain 3")
+    }
+  }
+
+  test("filter") {
+    new TestSets {
+      val set = union(union(s1, s2), s3)
+      val s = filter(set, x => x % 2 == 1)
+      assert(contains(s, 1), "filter contains 1")
+      assert(!contains(s, 2), "filter does not contain 2")
+      assert(contains(s, 3), "filter contains 3")
+
+    }
+  }
+
+  test("forall") {
+    new TestSets {
+      assert(forall(union(s1,s3), x => x % 2 == 1), "forall(1,3) is in function x % 2 == 1")
+      assert(forall(s2, x => x % 2 != 1), "forall(2) is in function x % 2 != 1")
+      assert(!forall(union(s1,s2), x => x % 2 != 1), "forall(1,2) is not in function x % 2 != 1")
+    }
+  }
+  
+  test("exists") {
+    new TestSets {
+      val set = union(s1, s2)
+      val set2 = union (s1, s3)
+      assert(exists(set, x => x % 2 == 1), "at least one element of (1,2) exists in funxtion x % 2 == 1")
+      assert(exists(set2, x => x % 2 == 1), "non element of (1,2) exists in funxtion x % 2 == 1")
+    }
+  }
+  
+  test("map") {
+    new TestSets {
+      val set = union(s1, s3)
+      val s = map(set, x => x * 2)
+      assert(contains(s, 2), "2 exists in the map of (1,3) by the function x => x * 2")
+      assert(contains(s, 6), "6 exists in the map of (1,3) by the function x => x * 2")
+      assert(contains(s, 3), "3 doen not exist in the map of (1,3) by the function x => x * 2")
     }
   }
 
